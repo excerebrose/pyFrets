@@ -13,7 +13,7 @@ Basic parameters are:
 -n --frets  : Integer that cuts the number of frets to display min = 1, max = 24. Default is 12 frets
 ```
 Furthermore,
-You have an option between displaying a scale or finding a particular not
+You have an option between displaying a scale or finding a particular note
 ```
 -f --find: Find a note in the guitar fretboard and display everywhere it occurs. Works with alternate tunings too
 -s --scale: Display scale notes on the guitar fretboard. Works with alternate tunings too. Available scales are 'maj','natMin','harmMin','melMin','pentMin','pentMaj','blues'
