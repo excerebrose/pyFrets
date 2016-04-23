@@ -17,9 +17,6 @@ def generateScale(rootNote,scaleIntervals):
 	del scale[len(scale) - 1]
 	return scale
 
-class scales(object):
-	def __init__(self,a,b):
-		self.x = (a,b)
 def main():
 	scaleSteps = {'maj':[2,2,1,2,2,2,1],'natMin':[2,1,2,2,1,2,2],'pentMin':[3,2,2,3,2],'blues':[3,2,1,1,3,2],'pentMaj':[2,2,3,2,3],'harMin':[2,1,2,2,1,3,1],'melMin':[2,1,2,2,2,2,1]}
 	parser = argparse.ArgumentParser(description='Prints fretboard for tunning given')
