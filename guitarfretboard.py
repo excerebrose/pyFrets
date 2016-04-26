@@ -42,10 +42,23 @@ def main():
 				scaleType = scaleSteps[scale[0][1]]
 				scaleNotes = generateScale(scaleRoot,scaleType)
 				print "Scale Notes are: " + '-'.join(scaleNotes)
+				if scale[0][1] == "pentMaj":
+					relativeScale = generateScale(scaleRoot,scaleSteps['maj'])
+					chords = getChords(relativeScale)
+				elif scale[0][1] == "pentMin":
+					relativeScale = generateScale(scaleRoot,scaleSteps['natMin'])
+					chords = getChords(relativeScale)
+				else:
+					chords = getChords(scaleNotes)
+				chordChart = PrettyTable(["Chord Type", "Root", "Third", "Fifth"])
+				print "Chords in scale are:"
+				for v in chords:
+					chordChart.add_row([v[0][0] + " " + v[1],v[0][0],v[0][1],v[0][2]])
+				print chordChart
 			else:
 				raise ValueError("Incorrect scale input, see help!")
 				exit()
-
+	
 	fretboard = PrettyTable()
 	fretboard.add_column("0",range(1,numberOfFrets+1))
 	for i in range(len(tuning)):
@@ -57,7 +70,39 @@ def main():
 		elif scale is not None:
 			noteList = map(lambda x: x if x in scaleNotes else 'x',noteList)
 		fretboard.add_column(current_note,noteList)
-
+	print "\nFretboard--->"
 	print fretboard
+
+def getChords(scale_notes):
+	len_scale = len(scale_notes)
+	steps = 2
+	chord_triads = []
+	for i in range(len_scale):
+		rootNote = scale_notes[i]
+		thirdNote = scale_notes[(i+steps)%len_scale]
+		fifthNote = scale_notes[(i+steps+steps)%len_scale]
+		chordType = getChordType(rootNote,thirdNote,fifthNote)
+		chord_triads.append([(rootNote,thirdNote,fifthNote),chordType])
+	return chord_triads
+
+def getChordType(rootNote,thirdNote,fifthNote):
+	intervals = (getInterval(rootNote,thirdNote),getInterval(thirdNote,fifthNote))
+	if (intervals == (4,3)):
+		return "Major"
+	elif (intervals == (3,4)):
+		return "Minor"
+	elif (intervals == (3,3)):
+		return "Diminished"
+	elif (intervals == (4,4)):
+		return "Augmented"
+	else:
+		return "Undefined"
+
+def getInterval(note1,note2):
+	index_note1 = notes.index(note1)
+	for i in range(12): # 12 notes always
+		if notes[(index_note1 + i) % 12] == note2:
+			return i
+
 if __name__ == "__main__":
 	main()
