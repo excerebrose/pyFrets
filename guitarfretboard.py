@@ -1,7 +1,9 @@
 import argparse
 from itertools import cycle,dropwhile,islice,product
 from prettytable import PrettyTable
+from termcolor import colored
 from sys import exit
+
 
 notes = ['A','A#','B','C','C#','D','D#','E','F','F#','G','G#']
 cycled_notes = cycle(notes)
@@ -41,7 +43,7 @@ def main():
 				scaleRoot = scale[0][0]
 				scaleType = scaleSteps[scale[0][1]]
 				scaleNotes = generateScale(scaleRoot,scaleType)
-				print("Scale Notes are: " + '-'.join(scaleNotes))
+				print("Scale Notes are: " + ' '.join(scaleNotes))
 				if scale[0][1] == "pentMaj":
 					relativeScale = generateScale(scaleRoot,scaleSteps['maj'])
 					chords = getChords(relativeScale)
@@ -53,23 +55,27 @@ def main():
 				chordChart = PrettyTable(["Chord Type", "Root", "Third", "Fifth"])
 				print("Chords in scale are:")
 				for v in chords:
-					chordChart.add_row([v[0][0] + " " + v[1],v[0][0],v[0][1],v[0][2]])
+					chordChart.add_row([colored(v[0][0] + " " + v[1], "green"),
+						 colored(v[0][0], 'blue', attrs=['bold']),
+						 colored(v[0][1], 'blue', attrs=['bold']),
+						 colored(v[0][2], 'blue', attrs=['bold'])
+					])
 				print(chordChart)
 			else:
 				raise ValueError("Incorrect scale input, see help!")
 				exit()
 	
 	fretboard = PrettyTable()
-	fretboard.add_column("0",list(range(1,numberOfFrets+1)))
-	for i in range(len(tuning)):
-		current_note = tuning[i]
+	fretboard.field_names = [colored(x, 'dark_grey') for x in range(0, numberOfFrets+1)]
+	
+	for current_note in reversed(tuning):
 		notesIterator = dropwhile(lambda x:x!=current_note,cycled_notes)
 		noteList = (list(islice(notesIterator,1,numberOfFrets+1)))
 		if elementToShow is not None:
-			noteList = [x if x==elementToShow else 'x' for x in noteList]
+			noteList = colored(current_note, 'red', attrs=['bold']) + [colored(x, 'green',  attrs=['bold']) if x==elementToShow else colored('-', 'dark_grey') for x in noteList]
 		elif scale is not None:
-			noteList = [x if x in scaleNotes else 'x' for x in noteList]
-		fretboard.add_column(current_note,noteList)
+			noteList = [colored(current_note, 'red', attrs=['bold'])] + [(colored(x, 'blue', attrs=['bold']) if x is scaleRoot else colored(x,'green', attrs=['bold'])) if x in scaleNotes else colored('-', 'dark_grey') for x in noteList]
+		fretboard.add_row(noteList)
 	print("\nFretboard--->")
 	print(fretboard)
 
